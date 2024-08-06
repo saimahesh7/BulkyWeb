@@ -1,5 +1,5 @@
 ﻿@model List<Category>
- 
+<partial name="_Notifications" />
 
 <div class="container">
     <div class="row pt-4 pb-3">
@@ -37,7 +37,7 @@
                             <a asp-controller="Category" asp-action="UpdateCategory" asp-route-id="@obj.CategoryId" class="btn btn-primary mx-2">
                                 <i class="bi bi-pencil-square"></i>Edit
                             </a>
-                            <a asp-controller="Category" asp-action="DeleteCategory" class="btn btn-danger mx-2">
+                            <a asp-controller="Category" asp-action="RemoveCategory" asp-route-id="@obj.CategoryId" class="btn btn-danger mx-2">
                                 <i class="bi bi-trash-fill"></i>Delete
                             </a>
                         </div>
