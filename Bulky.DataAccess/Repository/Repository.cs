@@ -1,5 +1,5 @@
-﻿using Bulky.DataAccess.Data;
-using Bulky.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess.Data;
+using BulkyBook.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -8,14 +8,14 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Bulky.DataAccess.Repository
+namespace BulkyBook.DataAccess.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly BulkyWebDbContext dbContext;
+        private readonly BulkyBookWebDbContext dbContext;
         internal DbSet<T> dbSet;
 
-        public Repository(BulkyWebDbContext dbContext)
+        public Repository(BulkyBookWebDbContext dbContext)
         {
             this.dbContext = dbContext;
             dbSet = dbContext.Set<T>();

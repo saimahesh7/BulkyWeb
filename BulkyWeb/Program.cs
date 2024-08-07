@@ -1,7 +1,10 @@
-using Bulky.DataAccess.Data;
+using BulkyBook.DataAccess.Data;
+using BulkyBook.DataAccess;
+using BulkyBook.DataAccess.Repository;
+using BulkyBook.DataAccess.Repository.IRepository;
 using Microsoft.EntityFrameworkCore;
 
-namespace BulkyWeb
+namespace BulkyBookWeb
 {
     public class Program
     {
@@ -12,9 +15,10 @@ namespace BulkyWeb
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddDbContext<BulkyWebDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("BulkyWebConnString")));
+            builder.Services.AddDbContext<BulkyBookWebDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("BulkyBookWebConnString")));
 
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
            // builder.Services
 
             var app = builder.Build();

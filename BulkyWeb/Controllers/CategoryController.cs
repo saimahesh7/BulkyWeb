@@ -1,22 +1,25 @@
-﻿using Bulky.DataAccess.Data;
-using Bulky.Models.Models;
+﻿using BulkyBook.DataAccess.Data;
+using BulkyBook.DataAccess.Repository.IRepository;
+using BulkyBook.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace BulkyWeb.Controllers
+namespace BulkyBookWeb.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly BulkyWebDbContext dbContext;
+        private readonly IUnitOfWork unitOfWork;
+        private readonly BulkyBookWebDbContext dbContext;
 
-        public CategoryController(BulkyWebDbContext dbContext)
+        public CategoryController(IUnitOfWork unitOfWork,BulkyBookWebDbContext dbContext)
         {
+            this.unitOfWork = unitOfWork;
             this.dbContext = dbContext;
         }
 
         public IActionResult Index()
         {
-            var categoryList= dbContext.Categories.ToList();
+            var categoryList= unitOfWork.Category.GetAll().ToList();
             return View(categoryList);
         }
 
@@ -30,8 +33,8 @@ namespace BulkyWeb.Controllers
         {
            if(ModelState.IsValid)
             {
-                dbContext.Categories.Add(category);
-                dbContext.SaveChanges();
+                unitOfWork.Category.Add(category);
+                unitOfWork.Save();
                 TempData["success"] = "Category Successfully Created";
                 return RedirectToAction("Index");
             }
@@ -45,7 +48,7 @@ namespace BulkyWeb.Controllers
                 return BadRequest("The id you are provided is irrelevent");
             }
 
-            Category? category= dbContext.Categories.FirstOrDefault(x => x.CategoryId == id);
+            Category? category= unitOfWork.Category.Get(x => x.CategoryId == id);
             //Category? category1= dbContext.Categories.Find(id);
             //Category? category2= dbContext.Categories.Where(x => x.CategoryId == id).FirstOrDefault();
 
@@ -62,8 +65,8 @@ namespace BulkyWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                dbContext.Categories.Update(category);
-                dbContext.SaveChanges();
+                unitOfWork.Category.Update(category);
+                unitOfWork.Save();
                 TempData["success"] = "Category Updated Successfully";
                 return RedirectToAction("Index");
             }
@@ -77,7 +80,7 @@ namespace BulkyWeb.Controllers
                 return BadRequest("The Id you are provided is not Valid");
             }
 
-            var category = dbContext.Categories.FirstOrDefault(x => x.CategoryId==id);
+            var category = unitOfWork.Category.Get(x => x.CategoryId==id);
 
             if(category == null)
             {
@@ -89,14 +92,14 @@ namespace BulkyWeb.Controllers
         [HttpPost]
         public IActionResult RemoveCategory(Category category)
         {
-            var categoryDomain = dbContext.Categories.FirstOrDefault(x => x.CategoryId == category.CategoryId);
+            var categoryDomain = unitOfWork.Category.Get(x => x.CategoryId == category.CategoryId);
 
             if(category == null)
             {
                 return NotFound();
             }
-            dbContext.Categories.Remove(categoryDomain);
-            dbContext.SaveChanges();
+            unitOfWork.Category.Remove(categoryDomain);
+            unitOfWork.Save();
             TempData["success"] = "Category Deleted Successfully";
 
             return RedirectToAction("Index");

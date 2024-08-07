@@ -1,11 +1,11 @@
-﻿using Bulky.Models.Models;
+﻿using BulkyBook.Models.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace Bulky.DataAccess.Data
+namespace BulkyBook.DataAccess.Data
 {
-    public class BulkyWebDbContext : DbContext
+    public class BulkyBookWebDbContext : DbContext
     {
-        public BulkyWebDbContext(DbContextOptions<BulkyWebDbContext> options) : base(options)
+        public BulkyBookWebDbContext(DbContextOptions<BulkyBookWebDbContext> options) : base(options)
         {
         }
 
