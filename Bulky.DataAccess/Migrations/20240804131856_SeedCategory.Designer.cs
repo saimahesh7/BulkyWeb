@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BulkyBook.DataAccess.Migrations
 {
-    [DbContext(typeof(BulkyBookBookWebDbContext))]
+    [DbContext(typeof(BulkyBookWebDbContext))]
     [Migration("20240804131856_SeedCategory")]
     partial class SeedCategory
     {

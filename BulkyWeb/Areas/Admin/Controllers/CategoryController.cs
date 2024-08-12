@@ -4,14 +4,15 @@ using BulkyBook.Models.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
-namespace BulkyBookWeb.Controllers
+namespace BulkyBookWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
         private readonly BulkyBookWebDbContext dbContext;
 
-        public CategoryController(IUnitOfWork unitOfWork,BulkyBookWebDbContext dbContext)
+        public CategoryController(IUnitOfWork unitOfWork, BulkyBookWebDbContext dbContext)
         {
             this.unitOfWork = unitOfWork;
             this.dbContext = dbContext;
@@ -19,7 +20,7 @@ namespace BulkyBookWeb.Controllers
 
         public IActionResult Index()
         {
-            var categoryList= unitOfWork.Category.GetAll().ToList();
+            var categoryList = unitOfWork.Category.GetAll().ToList();
             return View(categoryList);
         }
 
@@ -31,7 +32,7 @@ namespace BulkyBookWeb.Controllers
         [HttpPost]
         public IActionResult CreateCategory(Category category)
         {
-           if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 unitOfWork.Category.Add(category);
                 unitOfWork.Save();
@@ -43,12 +44,12 @@ namespace BulkyBookWeb.Controllers
 
         public IActionResult UpdateCategory(int? id)
         {
-            if(id == null || id <= 0)
+            if (id == null || id <= 0)
             {
                 return BadRequest("The id you are provided is irrelevent");
             }
 
-            Category? category= unitOfWork.Category.Get(x => x.CategoryId == id);
+            Category? category = unitOfWork.Category.Get(x => x.CategoryId == id);
             //Category? category1= dbContext.Categories.Find(id);
             //Category? category2= dbContext.Categories.Where(x => x.CategoryId == id).FirstOrDefault();
 
@@ -75,14 +76,14 @@ namespace BulkyBookWeb.Controllers
 
         public IActionResult RemoveCategory(int? id)
         {
-            if(id==null || id <= 0)
+            if (id == null || id <= 0)
             {
                 return BadRequest("The Id you are provided is not Valid");
             }
 
-            var category = unitOfWork.Category.Get(x => x.CategoryId==id);
+            var category = unitOfWork.Category.Get(x => x.CategoryId == id);
 
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }
@@ -94,7 +95,7 @@ namespace BulkyBookWeb.Controllers
         {
             var categoryDomain = unitOfWork.Category.Get(x => x.CategoryId == category.CategoryId);
 
-            if(category == null)
+            if (category == null)
             {
                 return NotFound();
             }

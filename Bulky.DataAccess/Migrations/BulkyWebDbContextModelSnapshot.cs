@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BulkyBook.DataAccess.Migrations
 {
-    [DbContext(typeof(BulkyBookBookWebDbContext))]
+    [DbContext(typeof(BulkyBookWebDbContext))]
     partial class BulkyBookBookWebDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
