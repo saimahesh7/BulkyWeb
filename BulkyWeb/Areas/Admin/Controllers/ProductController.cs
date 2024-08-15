@@ -1,7 +1,9 @@
 ﻿using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models.Models;
+using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace BulkyBookWeb.Areas.Admin.Controllers
@@ -10,39 +12,92 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     public class ProductController : Controller
     {
         private readonly IUnitOfWork unitOfWork;
+        private readonly IWebHostEnvironment webHostEnvironment;
         private readonly BulkyBookWebDbContext dbContext;
 
-        public ProductController(IUnitOfWork unitOfWork, BulkyBookWebDbContext dbContext)
+        public ProductController(IUnitOfWork unitOfWork,IWebHostEnvironment webHostEnvironment, BulkyBookWebDbContext dbContext)
         {
             this.unitOfWork = unitOfWork;
+            this.webHostEnvironment = webHostEnvironment;
             this.dbContext = dbContext;
         }
 
         public IActionResult Index()
         {
             var productList = unitOfWork.Product.GetAll().ToList();
+            
             return View(productList);
         }
 
-        public IActionResult CreateProduct()
+        public IActionResult UpsertProduct(int? id)
         {
-            return View();
+            IEnumerable<SelectListItem> categoryList = unitOfWork.Category
+                .GetAll().Select(x => new SelectListItem
+            {
+               Text = x.Name,
+               Value=x.CategoryId.ToString(),
+            });
+
+            ProductVM productVm = new ProductVM()
+            {
+                Product = new Product(),
+                CategoryList = categoryList,
+            };
+
+            if(id == null || id == 0)
+            {
+                return View(productVm);
+            }
+            else
+            {
+                productVm.Product = unitOfWork.Product.Get(p => p.ProductId == id);
+                 
+                if(productVm.Product == null)
+                {
+                    return NotFound();
+                }
+                return View(productVm);
+            }
+            
         }
 
         [HttpPost]
-        public IActionResult CreateProduct(Product product)
-        {
-            if (ModelState.IsValid)
-            {
-                unitOfWork.Product.Add(product);
+        public IActionResult UpsertProduct(ProductVM productVM, IFormFile? file)
+             {
+             if (ModelState.IsValid)
+             {
+                string wwwRootPath = webHostEnvironment.WebRootPath;
+
+                if(file != null)
+                {
+                    string productPath = Path.Combine(wwwRootPath, @"images\products");
+                    string fileName = Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);
+
+                    using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    productVM.Product.ImageUrl = @"images\products\" + fileName;
+                }
+
+                unitOfWork.Product.Add(productVM.Product);
                 unitOfWork.Save();
                 TempData["success"] = "Product Successfully Created";
                 return RedirectToAction("Index");
-            }
-            return View();
+             }
+             else
+             {
+                productVM.CategoryList = unitOfWork.Category.GetAll().Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.CategoryId.ToString(),
+                });
+                return View(productVM);
+             }
         }
 
-        public IActionResult UpdateProduct(int? id)
+       /* public IActionResult UpdateProduct(int? id)
         {
             if (id == null || id <= 0)
             {
@@ -72,7 +127,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
             return View();
-        }
+        }*/
 
         public IActionResult RemoveProduct(int? id)
         {
