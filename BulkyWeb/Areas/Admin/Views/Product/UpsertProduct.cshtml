@@ -19,6 +19,7 @@
     <div class="card-body p-4">
         <form method="post" class="row" enctype="multipart/form-data">
             <input type="text" hidden asp-for="Product.ProductId" />
+            <input type="text" hidden asp-for="Product.ImageUrl" />
             <div class="row">
                 <div class="col-10">
                     <div class="border p-3">
@@ -77,12 +78,10 @@
                                 @if (Model.Product.ProductId == null || Model.Product.ProductId == 0)
                                 {
                                     <button type="submit" asp-controller="Product" asp-action="UpsertProduct" class="btn btn-primary form-control">Create</button>
-
                                 }
                                 else
                                 {
                                     <button type="submit" asp-controller="Product" asp-action="UpsertProduct" class="btn btn-primary form-control">Update</button>
-
                                 }
                             </div>
                             <div class="col-6 col-md-3">

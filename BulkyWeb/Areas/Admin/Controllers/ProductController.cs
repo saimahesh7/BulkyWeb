@@ -24,7 +24,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         public IActionResult Index()
         {
-            var productList = unitOfWork.Product.GetAll().ToList();
+            var productList = unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
             
             return View(productList);
         }
@@ -46,10 +46,12 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
             if(id == null || id == 0)
             {
+                //Create
                 return View(productVm);
             }
             else
             {
+                //Update
                 productVm.Product = unitOfWork.Product.Get(p => p.ProductId == id);
                  
                 if(productVm.Product == null)
@@ -73,6 +75,17 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     string productPath = Path.Combine(wwwRootPath, @"images\products");
                     string fileName = Guid.NewGuid().ToString()+Path.GetExtension(file.FileName);
 
+                    if (!string.IsNullOrEmpty(productVM.Product.ImageUrl))
+                    {
+                        //Delete the old image
+                        var oldImagePath = Path.Combine(wwwRootPath,productVM.Product.ImageUrl.TrimStart('\\'));
+
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
                     using (var fileStream = new FileStream(Path.Combine(productPath, fileName), FileMode.Create))
                     {
                         file.CopyTo(fileStream);
@@ -81,7 +94,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     productVM.Product.ImageUrl = @"images\products\" + fileName;
                 }
 
-                unitOfWork.Product.Add(productVM.Product);
+                if(productVM.Product.ProductId != 0 || productVM.Product.ProductId != null)
+                {
+                    unitOfWork.Product.Update(productVM.Product);
+                }
+                else
+                {
+                    unitOfWork.Product.Add(productVM.Product);
+                }
                 unitOfWork.Save();
                 TempData["success"] = "Product Successfully Created";
                 return RedirectToAction("Index");
@@ -136,29 +156,60 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 return BadRequest("The Id you are provided is not Valid");
             }
 
-            var product = unitOfWork.Product.Get(x => x.ProductId == id);
+            var product = unitOfWork.Product.Get(x => x.ProductId == id,includeProperties:"Category");
+            IEnumerable<SelectListItem> categorieList = unitOfWork.Category.GetAll().Select(c => new SelectListItem()
+            {
+                Text= c.Name,
+                Value = c.CategoryId.ToString(),
+            });
 
-            if (product == null)
+            var productVm = new ProductVM()
+            {
+                CategoryList = categorieList,
+                Product = product
+            };
+
+            if (productVm == null)
             {
                 return NotFound();
             }
-            return View(product);
+            return View(productVm);
         }
 
         [HttpPost]
-        public IActionResult RemoveProduct(Product product)
+        public IActionResult RemoveProduct(ProductVM productVM)
         {
-            var productDomain = unitOfWork.Product.Get(x => x.ProductId == product.ProductId);
+            var productDomain = unitOfWork.Product.Get(x => x.ProductId == productVM.Product.ProductId);
 
-            if (product == null)
+            if (productVM.Product == null)
             {
                 return NotFound();
             }
+
+            string oldFilePath = Path.Combine(webHostEnvironment.WebRootPath, productVM.Product.ImageUrl.TrimStart('\\'));
+
+            if (System.IO.File.Exists(oldFilePath))
+            {
+                System.IO.File.Delete(oldFilePath);
+            }
+
             unitOfWork.Product.Remove(productDomain);
             unitOfWork.Save();
             TempData["success"] = "Product Deleted Successfully";
 
             return RedirectToAction("Index");
         }
+
+        #region API Calls
+
+        public IActionResult GetAll() 
+        { 
+            var productList = unitOfWork.Product.GetAll(includeProperties:"Category");
+
+            return Json(new { data  = productList });
+        }
+
+        #endregion
+
     }
 }
