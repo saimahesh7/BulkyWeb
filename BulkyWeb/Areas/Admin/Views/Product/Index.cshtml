@@ -4,8 +4,15 @@
 <div class="card shadow border-o mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
         <div class="row">
-            <div class="col-12 text-center">
+            <div class="col-6 text-start">
                 <h2 class="text-white py-2">Product List</h2>
+            </div>
+            <div class="col-6 text-end fs-5">
+                <input name="searchString" id="myInput" type="text" placeholder="Product.. 🔍" />
+                @* <form asp-controller="Product" asp-action="Index">
+                    <input name="searchString" type="search" placeholder="Search Product"/>
+                    <button  class="btn btn-outline-dark fs-5 btn-primary" type="submit">Search 🔍</button>
+                </form>  *@
             </div>
         </div>
     </div>
@@ -35,7 +42,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="myTable">
                     @foreach (var obj in Model)
                     {
                         <tr>
@@ -61,4 +68,19 @@
         </div>
     </div>
 </div>
+
+@section Scripts{
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}
 

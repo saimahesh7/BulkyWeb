@@ -22,11 +22,22 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             this.dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string? searchString)
         {
-            var productList = unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
-            
-            return View(productList);
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                var producsortedtList = unitOfWork.Product.GetAll(includeProperties: "Category")
+                    .Where(x => x.Title.Contains(searchString,StringComparison.OrdinalIgnoreCase) || 
+                    x.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
+
+                return View(producsortedtList);
+            }
+            else
+            {
+                var productList = unitOfWork.Product.GetAll(includeProperties:"Category").ToList();
+
+                return View(productList);
+            }
         }
 
         public IActionResult UpsertProduct(int? id)
