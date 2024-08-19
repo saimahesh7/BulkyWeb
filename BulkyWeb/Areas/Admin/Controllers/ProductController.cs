@@ -26,11 +26,11 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         {
             if (!string.IsNullOrEmpty(searchString))
             {
-                var producsortedtList = unitOfWork.Product.GetAll(includeProperties: "Category")
+                var productsearchtList = unitOfWork.Product.GetAll(includeProperties: "Category")
                     .Where(x => x.Title.Contains(searchString,StringComparison.OrdinalIgnoreCase) || 
                     x.Category.Name.Contains(searchString, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                return View(producsortedtList);
+                return View(productsearchtList);
             }
             else
             {
@@ -43,7 +43,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult UpsertProduct(int? id)
         {
             IEnumerable<SelectListItem> categoryList = unitOfWork.Category
-                .GetAll().Select(x => new SelectListItem
+            .GetAll().Select(x => new SelectListItem
             {
                Text = x.Name,
                Value=x.CategoryId.ToString(),

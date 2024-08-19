@@ -23,11 +23,11 @@
                     ➕ Create New Product
                 </a>
             </div>
-            <table class="table table-border table-striped">
+            <table id="myTable" class="table table-border table-striped">
                 <thead>
                     <tr>
-                        <th>
-                            Product Name
+                        <th class="sortable" data-sort="0">
+                            Product Name  🔃
                         </th>
                         <th>
                             ISBN
@@ -35,10 +35,10 @@
                         <th>
                             Author
                         </th>
-                        <th>
+                        <th class="sortable" >
                             Price
                         </th>
-                        <th>Category</th>
+                        <th class="sortable" >Category</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -80,6 +80,32 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
                 });
             });
+        });
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.sortable').click(function () {
+                var table = $(this).parents('table').eq(0);
+                var rows = table.find('tbody tr').toArray().sort(compare($(this).data('sort')));
+                this.asc = !this.asc;
+                if (!this.asc) rows = rows.reverse();
+                table.children('tbody').empty().html(rows);
+
+                $('.sortable').removeClass('asc desc');
+                $(this).addClass(this.asc ? 'asc' : 'desc');
+            });
+
+            function compare(index) {
+                return function (a, b) {
+                    var valA = getCellValue(a, index), valB = getCellValue(b, index);
+                    return $.isNumeric(valA) && $.isNumeric(valB) ? valA - valB : valA.localeCompare(valB);
+                };
+            }
+
+            function getCellValue(row, index) {
+                return $(row).children('td').eq(index).text();
+            }
         });
     </script>
 }
