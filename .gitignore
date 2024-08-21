@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Bulky.DataAccess/Migrations/20240820132816_AddIdentityTables.Designer.cs
