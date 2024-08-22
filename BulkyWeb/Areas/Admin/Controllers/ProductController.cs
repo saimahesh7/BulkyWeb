@@ -79,7 +79,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         [HttpPost]
         public IActionResult UpsertProduct(ProductVM productVM, IFormFile? file)
-             {
+        {
              if (ModelState.IsValid)
              {
                 string wwwRootPath = webHostEnvironment.WebRootPath;

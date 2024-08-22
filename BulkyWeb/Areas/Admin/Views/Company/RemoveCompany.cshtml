@@ -1,0 +1,50 @@
+﻿@model Company
+
+<div class="card shadow border-o mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                <h2 class="text-white py-2">Remove Company</h2>
+            </div>
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row">
+            <input type="hidden" asp-for="CompanyId" />
+            <div class="row">
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="CompanyName" readonly class="form-control border-0 shadow" placeholder="Enter Company Name" />
+                    <label asp-for="CompanyName" class="ms-2">Company Name</label>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="PhoneNumber" readonly class="form-control border-0 shadow" placeholder="Enter Company Number" />
+                    <label asp-for="PhoneNumber" class="ms-2">Company Phone Number</label>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="StreetAddress" readonly class="form-control border-0 shadow" placeholder="Enter Street Name" />
+                    <label asp-for="StreetAddress" class="ms-2">Street Name</label>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="City" readonly class="form-control border-0 shadow" placeholder="Enter City" />
+                    <label asp-for="City" class="ms-2">City</label>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="State" readonly class="form-control border-0 shadow" placeholder="Enter State" />
+                    <label asp-for="State" class="ms-2">State</label>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="PostalCode" readonly class="form-control border-0 shadow" placeholder="Enter PIN Code" />
+                    <label asp-for="PostalCode" class="ms-2">Postal Code</label>
+                </div>
+                <div class="row pt-2">
+                    <div class="col-6 col-md-3">
+                        <button type="submit" asp-controller="Company" asp-action="RemoveCompany" class="btn btn-danger form-control">Delete</button>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <a asp-controller="Company" asp-action="Index" class="btn btn-secondary border form-control">Back to List</a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

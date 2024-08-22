@@ -1,0 +1,72 @@
+﻿@model Company
+
+
+<div class="card shadow border-o mt-4">
+    <div class="card-header bg-secondary bg-gradient ml-0 py-3">
+        <div class="row">
+            <div class="col-12 text-center">
+                @if (Model.CompanyId == null || Model.CompanyId == 0)
+                {
+                    <h2 class="text-white py-2">Create New Company</h2>
+                }
+                else
+                {
+                    <h2 class="text-white py-2">Update Company</h2>
+                }
+            </div>
+
+        </div>
+    </div>
+    <div class="card-body p-4">
+        <form method="post" class="row" enctype="multipart/form-data">
+            <input type="text" hidden asp-for="CompanyId" />
+            <div class="row">
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="CompanyName" class="form-control border-0 shadow" placeholder="Enter Company Name" />
+                    <label asp-for="CompanyName" class="ms-2">Company Name</label>
+                    <span asp-validation-for="CompanyName" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="PhoneNumber" class="form-control border-0 shadow" placeholder="Enter Company Number" />
+                    <label asp-for="PhoneNumber" class="ms-2">Company Phone Number</label>
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="StreetAddress" class="form-control border-0 shadow" placeholder="Enter Street Name" />
+                    <label asp-for="StreetAddress" class="ms-2">Street Name</label>
+                    <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="City" class="form-control border-0 shadow" placeholder="Enter City" />
+                    <label asp-for="City" class="ms-2">City</label>
+                    <span asp-validation-for="City" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="State" class="form-control border-0 shadow" placeholder="Enter State" />
+                    <label asp-for="State" class="ms-2">State</label>
+                    <span asp-validation-for="State" class="text-danger"></span>
+                </div>
+                <div class="form-floating py-2 col-6">
+                    <input asp-for="PostalCode" class="form-control border-0 shadow" placeholder="Enter PIN Code" />
+                    <label asp-for="PostalCode" class="ms-2">Postal Code</label>
+                    <span asp-validation-for="PostalCode" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="row pt-2">
+                <div class="col-6 col-md-3">
+                    @if (Model.CompanyId == null || Model.CompanyId == 0)
+                    {
+                        <button type="submit" asp-controller="Company" asp-action="UpsertCompany" class="btn btn-primary form-control">Create</button>
+                    }
+                    else
+                    {
+                        <button type="submit" asp-controller="Company" asp-action="UpsertCompany" class="btn btn-primary form-control">Update</button>
+                    }
+                </div>
+                <div class="col-6 col-md-3">
+                    <a asp-controller="Company" asp-action="Index" class="btn btn-secondary border form-control">Back to List</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
